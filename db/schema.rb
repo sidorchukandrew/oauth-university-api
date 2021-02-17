@@ -10,9 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2021_02_17_034658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "guides", force: :cascade do |t|
+    t.datetime "published_date"
+    t.string "title"
+    t.text "description"
+    t.integer "read_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "series_id"
+    t.boolean "published"
+    t.index ["series_id"], name: "index_guides_on_series_id"
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.text "content"
+    t.integer "ordinal"
+    t.bigint "guide_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "title"
+    t.index ["guide_id"], name: "index_sections_on_guide_id"
+  end
+
+  create_table "series", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "image_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "published"
+    t.datetime "published_date"
+  end
 
 end

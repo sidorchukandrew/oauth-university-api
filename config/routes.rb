@@ -1,3 +1,7 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  resources :guides, :series
+  patch 'series', action: :update_bulk, controller: "series"
+  delete 'series', action: :delete_bulk, controller: "series"
+  get 'aws/images/signed_url', action: :get_presigned_url, controller: "images"
+  delete 'aws/images', action: :delete_image, controller: "images"
 end

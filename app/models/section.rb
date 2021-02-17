@@ -1,2 +1,3 @@
-class Section < ApplicationRecord
+class Section < ApplicationRecord   
+    belongs_to :guide
 end
