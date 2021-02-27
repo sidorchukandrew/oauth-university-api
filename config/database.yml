@@ -73,14 +73,14 @@ development:
 # the values provided in this file. Alternatively, you can specify a connection
 # URL environment variable explicitly:
 #
-#   production:
-#     url: <%= ENV['MY_APP_DATABASE_URL'] %>
+  production:
+    url: <%= ENV['DATABASE_URL'] %>
 #
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
 production:
   <<: *default
-  database: <%= ENV['OAUTH_UNIVERSITY_DATABASE'] %>
-  username: <%= ENV['OAUTH_UNIVERSITY_DATABASE_USERNAME'] %>
-  password: <%= ENV['OAUTH_UNIVERSITY_API_DATABASE_PASSWORD'] %>
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
