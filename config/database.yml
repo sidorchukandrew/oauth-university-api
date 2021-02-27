@@ -23,16 +23,16 @@ default: &default
 
 development:
   <<: *default
-  database: oauth_university_api_development
+  database: <%= ENV['OAUTH_UNIVERSITY_DATABASE'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user running Rails.
-  username: oauth_user
+  username: <%= ENV['OAUTH_UNIVERSITY_DATABASE_USERNAME'] %>
 
   # The password associated with the postgres role (username).
-  password: railspassword
+  password: <%= ENV['OAUTH_UNIVERSITY_DATABASE_PASSWORD'] %>
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -81,6 +81,6 @@ development:
 #
 production:
   <<: *default
-  database: oauth_university_api_production
-  username: oauth_university_api
+  database: <%= ENV['OAUTH_UNIVERSITY_DATABASE'] %>
+  username: <%= ENV['OAUTH_UNIVERSITY_DATABASE_USERNAME'] %>
   password: <%= ENV['OAUTH_UNIVERSITY_API_DATABASE_PASSWORD'] %>
