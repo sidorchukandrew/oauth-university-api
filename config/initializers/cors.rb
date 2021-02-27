@@ -6,6 +6,7 @@
 # Read more: https://github.com/cyu/rack-cors
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  puts ENV['CORS_ALLOWED_ORIGINS']
   allow do
     origins ENV['CORS_ALLOWED_ORIGINS']
 
