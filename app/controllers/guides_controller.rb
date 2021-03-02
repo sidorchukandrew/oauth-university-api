@@ -1,6 +1,7 @@
 class GuidesController < ApplicationController
     def index
         query = query_params
+
         if query
             @guides = Guide.includes(:sections).where(query)
             render :json => @guides, include: :sections
@@ -67,8 +68,10 @@ class GuidesController < ApplicationController
 
         def query_params
             query = params.permit(:series_id, :published, :title)
-
             query = replace_nulls_with_nil(query)
+            query[:published] = true unless @user
+
+            query
         end
 
         def replace_nulls_with_nil(query={})

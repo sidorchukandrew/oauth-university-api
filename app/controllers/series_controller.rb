@@ -82,6 +82,9 @@ class SeriesController < ApplicationController
     def query_params
       query = params.permit(:id, :title)
       query = replace_nulls_with_nil(query)
+      query[:published] = true unless @user
+
+      query
     end
 
     def replace_nulls_with_nil(query={})
