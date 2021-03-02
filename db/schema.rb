@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_28_022129) do
+ActiveRecord::Schema.define(version: 2021_03_02_013529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,27 @@ ActiveRecord::Schema.define(version: 2021_02_28_022129) do
     t.index ["section_id"], name: "index_oauth_configs_on_section_id"
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "permissions_roles", id: false, force: :cascade do |t|
+    t.bigint "role_id", null: false
+    t.bigint "permission_id", null: false
+    t.index ["permission_id"], name: "index_permissions_roles_on_permission_id"
+    t.index ["role_id"], name: "index_permissions_roles_on_role_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "sections", force: :cascade do |t|
     t.text "content"
     t.integer "ordinal"
@@ -56,5 +77,16 @@ ActiveRecord::Schema.define(version: 2021_02_28_022129) do
     t.datetime "published_date"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "email"
+    t.string "password"
+    t.boolean "verified"
+    t.bigint "role_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["role_id"], name: "index_users_on_role_id"
+  end
+
   add_foreign_key "oauth_configs", "sections"
+  add_foreign_key "users", "roles"
 end
