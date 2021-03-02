@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  scopes: MyString
+  baseUrl: MyString
+  section: one
+
+two:
+  scopes: MyString
+  baseUrl: MyString
+  section: two

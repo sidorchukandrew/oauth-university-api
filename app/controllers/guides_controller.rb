@@ -46,7 +46,8 @@ class GuidesController < ApplicationController
         def guides_params
             params.require(:guide).permit(
                 :title, :description, :published, :id, 
-                :sections_attributes => [:content, :id, :section_type, :ordinal]
+                :sections_attributes => [:content, :id, :section_type, :ordinal, 
+                    :oauth_config_attributes => [:scopes, :base_url]]
             )
         end
 
