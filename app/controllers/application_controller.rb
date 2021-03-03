@@ -12,13 +12,22 @@ class ApplicationController < ActionController::API
         end
     end
 
+    def authenticated?
+        !@user.nil?
+    end
+
     private
 
         def decoded_token
             if auth_header
                 token = auth_header.split(' ')[1]
                 if token
-                    decode token
+                    begin
+                        decode token
+                    rescue JWT::ExpiredSignature
+                        puts "EXPIRED"
+                        render json: {error: "Expired token"}, status: 401 and return
+                    end
                 end
             end
         end

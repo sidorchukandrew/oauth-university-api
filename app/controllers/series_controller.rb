@@ -1,13 +1,15 @@
 class SeriesController < ApplicationController
   def index
     query = query_params
-     if query
-            series = Series.where(query)
-            render :json => series, include: :guides
-        else
-            series = Series.all
-            render :json => series, include: :guides
-        end
+    if authenticated?
+      puts "Authenticated request, returning all series and guides."
+      series = Series.includes(:guides).where(query)
+      render :json => series, include: :guides
+    else
+      query[:published] = true
+      series = Series.includes(:guides).where(query).where(guides: {published: true})
+      render :json => series, include: :guides
+    end
   end
 
   def create
@@ -21,9 +23,26 @@ class SeriesController < ApplicationController
 
   def show
     series_id = params[:id]
-    result = Series.includes(:guides).find(series_id)
 
-    render json: result, include: :guides
+    if authenticated?
+      puts "Authenticated. Not filtering any return results."
+      series = Series.includes(:guides).find(series_id)
+      render json: series, include: :guides
+    else
+      puts "Not authenticated."
+        
+      series = Series.find(series_id)
+
+      if series.published
+        puts "Series is published. Returning series along with its published guides."
+        json_response = series.as_json
+        json_response["guides"] = series.guides.where(published: true)
+        render json: json_response
+      else
+        puts "Series is not published. Unauthorized access attempt."
+        render json: {error: "You are not authorized to view this resource."}, status: 403
+      end
+    end
   end
 
   def update
@@ -80,10 +99,8 @@ class SeriesController < ApplicationController
     end
 
     def query_params
-      query = params.permit(:id, :title)
+      query = params.permit(:id, :title, :published)
       query = replace_nulls_with_nil(query)
-      query[:published] = true unless @user
-
       query
     end
 

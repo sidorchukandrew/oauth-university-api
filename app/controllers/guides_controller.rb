@@ -1,21 +1,34 @@
 class GuidesController < ApplicationController
     def index
         query = query_params
-
-        if query
-            @guides = Guide.includes(:sections).where(query)
-            render :json => @guides, include: :sections
+        if authenticated?
+            puts "Authenticated request. Returning all guides."
+            guides = Guide.where(query).all
+            render :json => guides
         else
-            @guides = Guide.all
-            render :json => @guides
+            query[:published] = true
+            puts "Unauthenticated request. Returning only published guides."
+            guides = Guide.includes(:sections).where(query)
+            render :json => guides, include: :sections
         end
     end
 
     def show
         guide_id = params[:id]
-        result = Guide.includes(:sections).find(guide_id)
-
-        render json: result, include: :sections
+        guide = Guide.includes(:sections).find(guide_id)
+        if authenticated?
+            puts "Authenticated request. Returning requested guide."
+            render :json => guide, include: :sections
+        else
+            puts "Unauthenticated request."
+            if guide.published
+                puts "Returning guide anyways because it is published."
+                render :json => guide, include: :sections
+            else
+                puts "Unauthorized access attempt."
+                render :json => {error: "You are not authorized to view this resource."}, status: 403
+            end
+        end
     end
 
     def create
