@@ -9,16 +9,16 @@ class GuidesController < ApplicationController
             query[:published] = true
             puts "Unauthenticated request. Returning only published guides."
             guides = Guide.includes(:sections).where(query)
-            render :json => guides, include: :sections
+            render :json => guides, include: [sections: {include: :oauth_config}]
         end
     end
 
     def show
         guide_id = params[:id]
-        guide = Guide.includes(:sections).find(guide_id)
+        guide = Guide.includes(sections: [:oauth_config]).find(guide_id)
         if authenticated?
             puts "Authenticated request. Returning requested guide."
-            render :json => guide, include: :sections
+            render :json => guide, include: [sections: {include: :oauth_config}]
         else
             puts "Unauthenticated request."
             if guide.published
@@ -41,13 +41,19 @@ class GuidesController < ApplicationController
     end
 
     def update
-        id = params[:id]
-        guide = guides_params
-        guide[:read_time] = calculate_read_time(guide)
+        if authenticated?
+            puts "Authenticated request. Updating the guide."
+            id = params[:id]
+            guide = guides_params
 
-        result = Guide.where(id: id).update(guide).first
+            guide[:read_time] = calculate_read_time(guide)
+            result = Guide.where(id: id).update(guide).first
 
-        render :json => result, :include => :sections
+            render :json => result, include: [sections: {include: :oauth_config}]
+        else
+            puts "Unauthorized access attempted."
+            render :json => {error: "You are not authorized to modify this resource."}, status: 403
+        end
     end
 
     def destroy
@@ -61,7 +67,7 @@ class GuidesController < ApplicationController
             params.require(:guide).permit(
                 :title, :description, :published, :id, 
                 :sections_attributes => [:content, :id, :section_type, :ordinal, 
-                    :oauth_config_attributes => [:scopes, :base_url]]
+                    :oauth_config_attributes => [{:scopes => []}, :base_url, :id]]
             )
         end
 
