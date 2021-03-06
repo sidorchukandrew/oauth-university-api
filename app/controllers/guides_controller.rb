@@ -52,6 +52,8 @@ class GuidesController < ApplicationController
 
             result = Guide.where(id: id).update(guide).first
 
+            delete_image_in_aws(guide)
+
             render :json => result, include: [sections: {include: :oauth_config}]
         else
             puts "Unauthorized access attempted."
@@ -100,6 +102,18 @@ class GuidesController < ApplicationController
             query.each do |k, v|
                 if query[k] == "null"
                     query[k] = nil
+                end
+            end
+        end
+
+        def delete_image_in_aws(guide) 
+            if guide[:sections_attributes]
+                guide[:sections_attributes].each do |section|
+                    if section[:section_type] == "image" && section[:_destroy] == 1
+                        file_name = section[:content].sub("https://#{ENV['S3_BUCKET']}.s3.amazonaws.com/", "")
+                        client = Aws::S3::Client.new
+                        result = client.delete_object({key: file_name, bucket: ENV['S3_BUCKET']})
+                    end
                 end
             end
         end

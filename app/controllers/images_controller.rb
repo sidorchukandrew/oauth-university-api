@@ -16,7 +16,6 @@ class ImagesController < ApplicationController
     end
 
     def delete_image
-
         file_name = params[:imageUrl]
         file_name = file_name.sub("https://#{ENV['S3_BUCKET']}.s3.amazonaws.com/", "")
         client = Aws::S3::Client.new
