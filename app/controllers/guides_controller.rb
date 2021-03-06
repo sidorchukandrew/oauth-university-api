@@ -8,7 +8,7 @@ class GuidesController < ApplicationController
         else
             query[:published] = true
             puts "Unauthenticated request. Returning only published guides."
-            guides = Guide.includes(:sections).where(query)
+            guides = Guide.includes(sections: [:oauth_config]).where(query)
             render :json => guides, include: [sections: {include: :oauth_config}]
         end
     end
@@ -46,7 +46,10 @@ class GuidesController < ApplicationController
             id = params[:id]
             guide = guides_params
 
-            guide[:read_time] = calculate_read_time(guide)
+            if guide[:sections_attributes]
+                guide[:read_time] = calculate_read_time(guide)
+            end
+
             result = Guide.where(id: id).update(guide).first
 
             render :json => result, include: [sections: {include: :oauth_config}]
