@@ -72,13 +72,17 @@ class GuidesController < ApplicationController
             params.require(:guide).permit(
                 :title, :description, :published, :id, 
                 :sections_attributes => [:content, :id, :section_type, :ordinal, :_destroy,
-                    :oauth_config_attributes => [{:scopes => []}, :base_url, :id, :scope_delimiter]]
+                    :oauth_config_attributes => [
+                        {:scopes => []}, :base_url, :id, :scope_delimiter, :scope_param_name,
+                        :redirect_uri_param_name, :client_id_param_name
+                    ]
+                ]
             )
         end
 
         def calculate_read_time(guide)
             number_of_words = 0
-            average_words_read_per_minute = 200
+            average_words_read_per_minute = 170
 
             guide[:sections_attributes].each do |section|
                 if section[:section_type] == "markdown"

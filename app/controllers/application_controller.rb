@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
 
         if decoded
             user_id = decoded[0]['user_id']
-            @user = User.includes(:role).find(user_id)
+            @user = User.includes(role: [:permissions]).find(user_id)
         else
             puts "Couldn't find the user"
         end

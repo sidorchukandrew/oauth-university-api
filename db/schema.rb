@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_04_215512) do
+ActiveRecord::Schema.define(version: 2021_03_12_235140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,9 @@ ActiveRecord::Schema.define(version: 2021_03_04_215512) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "scope_delimiter"
+    t.string "redirect_uri_param_name"
+    t.string "client_id_param_name"
+    t.string "scope_param_name"
     t.index ["section_id"], name: "index_oauth_configs_on_section_id"
   end
 

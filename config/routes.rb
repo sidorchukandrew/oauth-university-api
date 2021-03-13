@@ -8,4 +8,5 @@ Rails.application.routes.draw do
 
   post 'auth/login', action: :login, controller: "auth"
 
+  get '/users/me', action: :me, controller: "users"
 end
