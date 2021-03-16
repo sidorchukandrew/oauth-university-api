@@ -16,6 +16,10 @@ class ApplicationController < ActionController::API
         !@user.nil?
     end
 
+    def render_unauthorized_request
+        render :json => {error: "Unauthorized request."}, status: 403
+    end
+
     private
 
         def decoded_token
@@ -38,5 +42,10 @@ class ApplicationController < ActionController::API
         
         def decode(token)
             JWT.decode(token, "secret key", true, algorithm: "HS256")
+        end
+
+        def has_permission(permission)
+            permission = @user.role.permissions.select {|role_permission| role_permission.name == permission}
+            !permission.empty?
         end
 end
