@@ -10,7 +10,7 @@ class RolesController < ApplicationController
 
     def create
         if has_permission("roles.create")
-            role = Role.new(role_params)
+            role = Role.create(role_params)
             render :json => role, include: :permissions
         else
             render :json => {error: "You are not authorized to create this resource."}, status: 403
